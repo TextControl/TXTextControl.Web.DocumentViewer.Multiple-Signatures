@@ -1,0 +1,62 @@
+﻿@using TXTextControl.Web.MVC.DocumentViewer
+
+@model tx_viewer_sign_multiple.Models.SignProcess
+
+@{
+    ViewBag.Title = "Sign Document";
+    ViewBag.Signer = Model.Signer.FirstName + " " + Model.Signer.Name;
+}
+
+<div style="height: calc(100vH - 56px);">
+
+@Html.TXTextControl().DocumentViewer(settings =>
+{
+    settings.DocumentPath = Server.MapPath("~/App_Data/documentflows/" + Model.EnvelopeId + "/" + Model.Template);
+    settings.Dock = DocumentViewerSettings.DockStyle.Fill;
+    settings.SignatureSettings = new SignatureSettings()
+    {
+        OwnerName = Model.Owner,
+        ShowSignatureBar = true,
+        SignatureBoxName = Model.Signer.SignatureBoxName,
+        SignerInitials = Model.Signer.Initials,
+        SignerName = Model.Signer.FirstName + " " + Model.Signer.Name,
+        UniqueId = Model.EnvelopeId
+    };
+}).Render()
+
+</div>
+
+<script>
+    // set the call back of the submit button
+    TXDocumentViewer.setSubmitCallback(saveDocument);
+
+    function saveDocument(e) {
+        console.log(e);
+
+        var serviceURL = "/Sign/SignDocument";
+
+        // call the SignDocument endpoint and pass the binary
+        // signed document
+        $.ajax({
+            type: "POST",
+            url: serviceURL,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                UniqueId: e.UniqueId,
+                Document: e.Document,
+                SignerId: @Model.Signer.Id
+            }),
+            success: successFunc,
+            error: errorFunc
+        });
+
+        function successFunc(data, status) {
+            window.location = "/Home/Thanks";
+        }
+
+        function errorFunc() {
+            alert("An error occured.");
+        }
+    }
+
+</script>

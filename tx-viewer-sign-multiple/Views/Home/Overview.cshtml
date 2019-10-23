@@ -1,0 +1,83 @@
+﻿@model List<tx_viewer_sign_multiple.Models.DocumentFlow>
+
+@using TXTextControl.Web.MVC.DocumentViewer
+
+@{
+    ViewBag.Title = "Overview";
+    ViewBag.Signer = "Document Owner";
+}
+
+    <div class="container mt-3">
+
+        <h2 class="mb-3 mt-5">Available Document Flows</h2>
+
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Envelope Id</th>
+                    <th>Template</th>
+                    <th>Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var envelope in Model)
+                {
+                    <tr data-toggle="collapse" data-target="#@envelope.EnvelopeId" class="clickable">
+                        <td>@envelope.EnvelopeId</td>
+                        <td>@envelope.Template</td>
+                        <td>@envelope.Owner</td>
+                    </tr>
+                    <tr>
+                        <td id="@envelope.EnvelopeId" class="" colspan="3">
+                            <table class="table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Name</th>
+                                        <th>Share Link</th>
+                                        <th>Signed</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var signer in envelope.Signers)
+                                    {
+                                        <tr>
+                                            <td>@signer.Id</td>
+                                            <td>@signer.FirstName @signer.Name</td>
+                                            <td>@Html.ActionLink("Signature Link", "Sign", "Home", new { envelopeId = envelope.EnvelopeId, signerId = signer.Id }, new { target = "_blank" })</td>
+                                            <td>
+                                                @if (signer.SignatureComplete == true)
+                                                {<i style="color: green;" class="fas fa-check"></i>}
+                                                else
+                                                {<i style="color: red;" class="fas fa-times"></i>}
+                                            </td>
+                                        </tr>
+                                    }
+
+                                    @if (System.IO.File.Exists(Server.MapPath("~/App_Data/documentflows/" + envelope.EnvelopeId + "/signed.tx")) == true)
+                                    {
+
+                                    <tr>
+                                        <td colspan="4">
+                                            <div style="height: 400px">
+                                                @Html.TXTextControl().DocumentViewer(settings =>
+                                                {
+                                                    settings.DocumentPath = Server.MapPath("~/App_Data/documentflows/" + envelope.EnvelopeId + "/signed.tx");
+                                                }).Render()
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
