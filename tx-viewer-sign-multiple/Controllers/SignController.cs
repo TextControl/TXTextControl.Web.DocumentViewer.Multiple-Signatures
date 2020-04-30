@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using tx_viewer_sign_multiple.Models;
+using TXTextControl.Web.MVC.DocumentViewer.Model;
 
 namespace tx_viewer_sign_multiple.Controllers
 {
@@ -13,12 +15,15 @@ namespace tx_viewer_sign_multiple.Controllers
         // current signed document.
         // Additionally, the status is updated in the document flow json file.
         [HttpPost]
-        public ActionResult SignDocument(
-            string UniqueId,
-            string Document,
-            string SignerId)
+        public ActionResult SignDocument()
         {
-            byte[] doc = Convert.FromBase64String(Document);
+            Request.InputStream.Position = 0;
+            System.IO.StreamReader str = new System.IO.StreamReader(Request.InputStream);
+            string sBuf = str.ReadToEndAsync().Result;
+
+            SignDocument jsonDocument = JsonConvert.DeserializeObject<SignDocument>(sBuf);
+
+            byte[] doc = Convert.FromBase64String(jsonDocument.Document);
 
             // create a new ServerTextControl
             using (TXTextControl.ServerTextControl tx = new TXTextControl.ServerTextControl())
@@ -29,21 +34,21 @@ namespace tx_viewer_sign_multiple.Controllers
                 tx.Load(doc, TXTextControl.BinaryStreamType.InternalUnicodeFormat);
 
                 // save the document as the current signed documet
-                tx.Save(Server.MapPath("~/App_Data/documentflows/" + UniqueId + "/signed.tx"),
+                tx.Save(Server.MapPath("~/App_Data/documentflows/" + jsonDocument.UniqueId + "/signed.tx"),
                     TXTextControl.StreamType.InternalUnicodeFormat);
             }
 
             // read the document flow structure
             string jsonFlow = System.IO.File.ReadAllText(
-                Server.MapPath("~/App_Data/documentflows/" + UniqueId + "/documentflow.json"));
+                Server.MapPath("~/App_Data/documentflows/" + jsonDocument.UniqueId + "/documentflow.json"));
 
             DocumentFlow documentflow = Newtonsoft.Json.JsonConvert.DeserializeObject<DocumentFlow>(jsonFlow);
-            Signer signer = documentflow.Signers.Find(x => x.Id == int.Parse(SignerId));
+            Signer signer = documentflow.Signers.Find(x => x.Id == int.Parse(jsonDocument.SignerId));
             signer.SignatureComplete = true; // mark as completed
 
             // save the flow structure
             System.IO.File.WriteAllText(
-                Server.MapPath("~/App_Data/documentflows/" + UniqueId + "/documentflow.json"),
+                Server.MapPath("~/App_Data/documentflows/" + jsonDocument.UniqueId + "/documentflow.json"),
                 Newtonsoft.Json.JsonConvert.SerializeObject(documentflow));
 
             return new JsonResult() { Data = true };

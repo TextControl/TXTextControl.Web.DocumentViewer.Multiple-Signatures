@@ -11,7 +11,8 @@
 
 @Html.TXTextControl().DocumentViewer(settings =>
 {
-    settings.DocumentPath = Server.MapPath("~/App_Data/documentflows/" + Model.EnvelopeId + "/" + Model.Template);
+    settings.DocumentPath = Server.MapPath("~/App_Data/documentflows/"
+        + Model.EnvelopeId + "/" + Model.Template);
     settings.Dock = DocumentViewerSettings.DockStyle.Fill;
     settings.SignatureSettings = new SignatureSettings()
     {
