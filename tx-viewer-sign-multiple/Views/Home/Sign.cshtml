@@ -21,8 +21,9 @@
         SignatureBoxName = Model.Signer.SignatureBoxName,
         SignerInitials = Model.Signer.Initials,
         SignerName = Model.Signer.FirstName + " " + Model.Signer.Name,
-        UniqueId = Model.EnvelopeId
-    };
+        UniqueId = Model.EnvelopeId,
+        RedirectUrlAfterSignature = "/Home/Thanks"
+};
 }).Render()
 
 </div>
