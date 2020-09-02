@@ -22,8 +22,8 @@
         SignerInitials = Model.Signer.Initials,
         SignerName = Model.Signer.FirstName + " " + Model.Signer.Name,
         UniqueId = Model.EnvelopeId,
-        RedirectUrlAfterSignature = "/Home/Thanks"
-};
+        RedirectUrlAfterSignature = ""
+    };
 }).Render()
 
 </div>
@@ -44,8 +44,8 @@
             url: serviceURL,
             contentType: 'application/json',
             data: JSON.stringify({
-                UniqueId: e.UniqueId,
-                Document: e.Document,
+                UniqueId: e.uniqueId,
+                Document: e.document,
                 SignerId: @Model.Signer.Id
             }),
             success: successFunc,

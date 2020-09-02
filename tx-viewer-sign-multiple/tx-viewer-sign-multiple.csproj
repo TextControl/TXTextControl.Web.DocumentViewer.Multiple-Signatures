@@ -122,8 +122,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files\Text Control GmbH\TX Text Control 28.0.NET Server for ASP.NET\Assembly\TXTextControl.Server.dll</HintPath>
     </Reference>
-    <Reference Include="TXTextControl.Web.MVC.DocumentViewer, Version=28.0.201.500, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TXTextControl.Web.DocumentViewer.28.0.204.500\lib\net45\TXTextControl.Web.MVC.DocumentViewer.dll</HintPath>
+    <Reference Include="TXTextControl.Web.MVC.DocumentViewer, Version=28.0.211.500, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TXTextControl.Web.DocumentViewer.28.0.211.500\lib\net45\TXTextControl.Web.MVC.DocumentViewer.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -277,7 +277,9 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets'))" />
   </Target>
+  <Import Project="..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets" Condition="Exists('..\packages\BuildBundlerMinifier.3.2.449\build\BuildBundlerMinifier.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
